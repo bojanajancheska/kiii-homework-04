@@ -1,19 +1,29 @@
-node {
-    def app
-    stage('Clone repository') {
-        checkout scm
-    }
-    stage('Build image') {
-       app = docker.build("bojanajancheska/kiii-homework-04")
-    }
-    stage('Push image') {   
-       steps {
+pipeline {
+    agent any
+
+    stages {
+        stage('Clone repository') {
+            steps {
+                checkout scm
+            }
+        }
+        stage('Build image') {
+            steps {
+                script {
+                    app = docker.build("bojanajancheska/kiii-homework-04")
+                }
+            }
+        }
+        stage('Push image') {
+            steps {
                 script {
                     // right parameter is jenkins credentials
                    docker.withRegistry('https://registry.hub.docker.com', 'dockerhub') {
-                       app.push("latest")  
+                        app.push("${env.BRANCH_NAME}-${env.BUILD_NUMBER}")
+                        app.push("${env.BRANCH_NAME}-latest")
                    }
                 }
             }
+        }
     }
 }
