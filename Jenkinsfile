@@ -1,4 +1,7 @@
 pipeline {
+    environment{
+        branchName="bojanajancheska/kiii-homework-04"
+    }
     agent any
 
     stages {
